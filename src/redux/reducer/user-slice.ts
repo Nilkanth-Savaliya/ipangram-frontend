@@ -31,12 +31,26 @@ export const signup = createAsyncThunk(
   }
 );
 
+export const getAllUsers = createAsyncThunk(
+  "user/getAllUsers",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await new RestApi().get("/user/getAllUsers", payload);
+      return response?.data?.data;
+    } catch (error) {
+      console.error("Error occurred while fetching users:", error);
+      thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
     user: null,
     loading: false,
     error: null,
+    allUsers: [],
   },
   reducers: {
     setUser: (state, action) => {
@@ -62,6 +76,16 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(signup.rejected, (state, action) => {
+        state.error = action.error;
+        state.loading = false;
+      })
+      .addCase(getAllUsers.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.allUsers = action.payload;
+      })
+      .addCase(getAllUsers.rejected, (state, action) => {
         state.error = action.error;
         state.loading = false;
       });

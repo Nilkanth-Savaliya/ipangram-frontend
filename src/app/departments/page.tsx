@@ -2,7 +2,7 @@
 import { PlusIcon } from "@heroicons/react/16/solid";
 import Layout from "../components/layout";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   deleteDepartment,
   fetchDepartments,
@@ -10,6 +10,7 @@ import {
 import { AppDispatch, RootState } from "@/redux/store";
 import AddDepartment from "./components/add-department";
 import Pagination from "../components/pagination";
+import RestApi from "@/utils/api";
 
 const Departments = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +19,16 @@ const Departments = () => {
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [defaultValues, setDefaultValues] = useState(null);
+
+  useEffect(() => {
+    new RestApi().get(`/user/query`).then((response) => {
+      console.log("response", response);
+    });
+
+    new RestApi().get(`/user/query2`).then((response) => {
+      console.log("response2", response);
+    });
+  }, []);
 
   useEffect(() => {
     console.log("fetching departments", currentPage, pageSize);
